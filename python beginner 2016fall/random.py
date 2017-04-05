@@ -32,4 +32,5 @@ def expint(n,x):
 vec_expint=np.vectorize (expint)
 vec_expint(3,np.arange (1,4,0.5))
 
+dgfdsgfdsgf
 
