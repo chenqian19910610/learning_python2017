@@ -1,5 +1,6 @@
 """
 multi-class prediction evaluation:http://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics
+http://scikit-learn.org/stable/modules/neural_networks_supervised.html#classification
 http://scikit-learn.org/stable/modules/multiclass.html
 """
 # import pandas as pd
@@ -40,7 +41,7 @@ http://scikit-learn.org/stable/modules/multiclass.html
 
 
 """
-neural network classifier
+neural network classifier, KNeighbor, Decision Tree,SGDClass
 """
 import pandas as pd
 import numpy as np
@@ -48,7 +49,9 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import make_scorer
 from sklearn.metrics import accuracy_score
 from sklearn.neural_network import MLPClassifier
-
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 def accu_score(y_true,y_pred):
     acc=accuracy_score(y_true,y_pred)
@@ -63,7 +66,10 @@ X_test=Test_data[:,1:]
 y_test=np.zeros([X_test.shape[0],2])
 y_test[:,0]=Test_data[:,0]
 
-clf=MLPClassifier(solver='lbfgs', alpha=1e-5)
+clf=DecisionTreeClassifier(random_state=0)
+# clf=KNeighborsClassifier(n_neighbors=3)
+# clf=SGDClassifier(loss='hinge')
+# clf=MLPClassifier(solver='lbfgs', alpha=1e-5)
 clf.fit(X_train,y_train)
 # y_pred=clf.predict(X_train)
 # acc=accuracy_score(y_train,y_pred)
@@ -73,4 +79,4 @@ cvscore=cross_val_score(clf,X_train,y_train,scoring=make_scorer(accu_score),verb
 print('cvscore',np.mean(cvscore))
 
 y_test[:,1]=clf.predict(X_test)
-pd.DataFrame(data=y_test).to_csv('./neuralnetworkclassifier.csv', header=['Id', 'y'], sep=',', index=False)
+pd.DataFrame(data=y_test).to_csv('./decisiontree.csv', header=['Id', 'y'], sep=',', index=False)
