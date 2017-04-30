@@ -81,43 +81,80 @@ multilayer perceptron for multi-class softmax
 # df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
-MLP change the optimizer
+MLP change the optimizer--so far best
 """
+# from keras.models import Sequential
+# from keras.layers import Dense,Dropout,Activation
+# from keras.optimizers import SGD
+# import numpy as np
+# import pandas as pd
+#
+# X_train=pd.read_hdf('train.h5','train').values[:,1:]
+# print(X_train.shape)
+# y_train=pd.read_hdf('train.h5','train').values[:,0]
+# print(y_train.shape)
+# from keras.utils.np_utils import to_categorical
+# y_train=to_categorical(y_train)
+# X_test=pd.read_hdf('test.h5','test').values[:,:]
+# print(X_test.shape)
+# y_test=np.zeros([X_test.shape[0],2])
+# y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
+#
+#
+# model=Sequential()
+# model.add(Dense(256,activation='relu',input_dim=100))
+# model.add(Dropout(0.5))
+# model.add(Dense(128,activation='relu'))
+# model.add(Dropout(0.5))
+# model.add(Dense(64,activation='relu'))
+# model.add(Dropout(0.5))
+# model.add(Dense(5,activation='softmax'))
+#
+#
+# sgd=SGD(lr=0.01,decay=1e-6,momentum=0.9,nesterov=True)
+# model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
+#
+# model.fit(X_train,y_train,epochs=500,batch_size=128)
+# score=model.evaluate(X_train,y_train,batch_size=128)
+# print(score)
+#
+# y_test[:,1]=model.predict_classes(X_test)
+# df=pd.DataFrame(data=y_test)
+# df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
+
+"""
+encoding to categorical
+"""
+import numpy
+import pandas
 from keras.models import Sequential
-from keras.layers import Dense,Dropout,Activation
-from keras.optimizers import SGD
-import numpy as np
-import pandas as pd
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import np_utils
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import cross_val_score
 
 X_train=pd.read_hdf('train.h5','train').values[:,1:]
-print(X_train.shape)
 y_train=pd.read_hdf('train.h5','train').values[:,0]
-print(y_train.shape)
-from keras.utils.np_utils import to_categorical
-y_train=to_categorical(y_train)
 X_test=pd.read_hdf('test.h5','test').values[:,:]
-print(X_test.shape)
 y_test=np.zeros([X_test.shape[0],2])
 y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
 
+encoder=LabelEncoder()
+encoder.fit(y_train)
+encoded_y=encoder.transform(y_train)
+dummy_y=np_utils.to_categorical(encoded_y)
 
-model=Sequential()
-model.add(Dense(256,activation='relu',input_dim=100))
-model.add(Dropout(0.5))
-model.add(Dense(128,activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(64,activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(5,activation='softmax'))
+def baseline_model():
+    model=Sequential()
+    model.add(Dense(256,activation='relu',input_dim=100))
+    model.add(Dropout(0.5))
+    model.add(Dense(128,activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(64,activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(5,activation='softmax'))
+    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    return model
 
-
-sgd=SGD(lr=0.01,decay=1e-6,momentum=0.9,nesterov=True)
-model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
-
-model.fit(X_train,y_train,epochs=500,batch_size=128)
-score=model.evaluate(X_train,y_train,batch_size=128)
-print(score)
-
-y_test[:,1]=model.predict_classes(X_test)
-df=pd.DataFrame(data=y_test)
-df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
+estimator=KerasClassifier(build_fn=baseline_model(),)
