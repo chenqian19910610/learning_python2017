@@ -81,7 +81,7 @@ multilayer perceptron for multi-class softmax
 # df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
-MLP change the optimizer--so far best
+MLP change the optimizer--ada sgd see more: http://sebastianruder.com/optimizing-gradient-descent/
 """
 # from keras.models import Sequential
 # from keras.layers import Dense,Dropout,Activation
@@ -123,16 +123,17 @@ MLP change the optimizer--so far best
 # df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
-encoding to categorical
+encoding to categorical--------sooooooo slow????????The model is not configured to compute accuracy. ["accuracy"]`to the `model.compile()` method
 """
-import numpy
-import pandas
+import numpy as np
+import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense,Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
 
 X_train=pd.read_hdf('train.h5','train').values[:,1:]
 y_train=pd.read_hdf('train.h5','train').values[:,0]
@@ -144,6 +145,7 @@ encoder=LabelEncoder()
 encoder.fit(y_train)
 encoded_y=encoder.transform(y_train)
 dummy_y=np_utils.to_categorical(encoded_y)
+print(dummy_y)
 
 def baseline_model():
     model=Sequential()
@@ -154,7 +156,47 @@ def baseline_model():
     model.add(Dense(64,activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(5,activation='softmax'))
-    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
     return model
 
-estimator=KerasClassifier(build_fn=baseline_model(),)
+
+estimator=KerasClassifier(build_fn=baseline_model,epochs=1000,batch_size=5,verbose=0)
+KFold=KFold(shuffle=True)
+score=cross_val_score(estimator,X_train,dummy_y,cv=KFold)
+print(score)
+
+estimator.fit(X_train,dummy_y)
+predictions= estimator.predict(X_test)
+print(encoder.inverse_transform(predictions))
+y_test[:,1]=encoder.inverse_transform(baseline_model().predict(X_test))
+
+df=pd.DataFrame(data=y_test)
+df.to_csv('encoder_mlp.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
+
+"""
+MLPClassifier sklearn--reach maximum iterations, but cannot converge the optimization
+"""
+# import numpy as np
+# import pandas as pd
+# from sklearn.neural_network import MLPClassifier
+# from sklearn.model_selection import cross_val_score
+# from sklearn.metrics import make_scorer,accuracy_score
+#
+# def accu_score(y_true,y_pred):
+#     acc=accuracy_score(y_true,y_pred)
+#     return acc
+#
+# X_train=pd.read_hdf('train.h5','train').values[:,1:]
+# y_train=pd.read_hdf('train.h5','train').values[:,0]
+# X_test=pd.read_hdf('test.h5','test').values[:,:]
+# y_test=np.zeros([X_test.shape[0],2])
+# y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
+#
+# clf=MLPClassifier(solver='adam',alpha=1e-5,activation='relu',random_state=1)
+# clf.fit(X_train,y_train)
+#
+# cvscore=cross_val_score(clf,X_train,y_train, scoring=make_scorer(accu_score),verbose=0,cv=10)
+# y_test[:,1]=clf.predict(X_test)
+#
+# df=pd.DataFrame(data=y_test)
+# df.to_csv('MLPclassifier.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
