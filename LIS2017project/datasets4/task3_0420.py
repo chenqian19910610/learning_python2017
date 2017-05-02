@@ -123,17 +123,17 @@ MLP change the optimizer--ada sgd see more: http://sebastianruder.com/optimizing
 # df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
-encoding to categorical--------sooooooo slow????????The model is not configured to compute accuracy. ["accuracy"]`to the `model.compile()` method
+encoding to categorical--------sooooooo slow????????
+The model is not configured to compute accuracy. ["accuracy"]`to the `model.compile()` method
+The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+why train is ok, predict is wrong???????
 """
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense,Dropout
-from keras.wrappers.scikit_learn import KerasClassifier
+from keras.layers import Dense,Dropout,Activation
 from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold
 
 X_train=pd.read_hdf('train.h5','train').values[:,1:]
 y_train=pd.read_hdf('train.h5','train').values[:,0]
@@ -159,16 +159,11 @@ def baseline_model():
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
     return model
 
-
-estimator=KerasClassifier(build_fn=baseline_model,epochs=1000,batch_size=5,verbose=0)
-KFold=KFold(shuffle=True)
-score=cross_val_score(estimator,X_train,dummy_y,cv=KFold)
+baseline_model().fit(X_train,dummy_y,epochs=500,batch_size=128)
+score=baseline_model().evaluate(X_train,dummy_y,batch_size=128)
 print(score)
 
-estimator.fit(X_train,dummy_y)
-predictions= estimator.predict(X_test)
-print(encoder.inverse_transform(predictions))
-y_test[:,1]=encoder.inverse_transform(baseline_model().predict(X_test))
+y_test[:,1]=baseline_model().predict_classes(X_test)
 
 df=pd.DataFrame(data=y_test)
 df.to_csv('encoder_mlp.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
