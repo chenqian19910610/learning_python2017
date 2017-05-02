@@ -82,45 +82,48 @@ multilayer perceptron for multi-class softmax
 
 """
 MLP change the optimizer--ada sgd see more: http://sebastianruder.com/optimizing-gradient-descent/
+https://keras.io/optimizers/
 """
-# from keras.models import Sequential
-# from keras.layers import Dense,Dropout,Activation
-# from keras.optimizers import SGD
-# import numpy as np
-# import pandas as pd
-#
-# X_train=pd.read_hdf('train.h5','train').values[:,1:]
-# print(X_train.shape)
-# y_train=pd.read_hdf('train.h5','train').values[:,0]
-# print(y_train.shape)
-# from keras.utils.np_utils import to_categorical
-# y_train=to_categorical(y_train)
-# X_test=pd.read_hdf('test.h5','test').values[:,:]
-# print(X_test.shape)
-# y_test=np.zeros([X_test.shape[0],2])
-# y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
-#
-#
-# model=Sequential()
-# model.add(Dense(256,activation='relu',input_dim=100))
-# model.add(Dropout(0.5))
-# model.add(Dense(128,activation='relu'))
-# model.add(Dropout(0.5))
-# model.add(Dense(64,activation='relu'))
-# model.add(Dropout(0.5))
-# model.add(Dense(5,activation='softmax'))
-#
-#
+from keras.models import Sequential
+from keras.layers import Dense,Dropout,Activation
+from keras.optimizers import SGD
+import numpy as np
+import pandas as pd
+
+X_train=pd.read_hdf('train.h5','train').values[:,1:]
+print(X_train.shape)
+y_train=pd.read_hdf('train.h5','train').values[:,0]
+print(y_train.shape)
+from keras.utils.np_utils import to_categorical
+y_train=to_categorical(y_train)
+X_test=pd.read_hdf('test.h5','test').values[:,:]
+print(X_test.shape)
+y_test=np.zeros([X_test.shape[0],2])
+y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
+
+
+model=Sequential()
+model.add(Dense(256,activation='relu',input_dim=100))
+model.add(Dropout(0.5))
+model.add(Dense(128,activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(64,activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(5,activation='softmax'))
+
+
 # sgd=SGD(lr=0.01,decay=1e-6,momentum=0.9,nesterov=True)
-# model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
-#
-# model.fit(X_train,y_train,epochs=500,batch_size=128)
-# score=model.evaluate(X_train,y_train,batch_size=128)
-# print(score)
-#
-# y_test[:,1]=model.predict_classes(X_test)
-# df=pd.DataFrame(data=y_test)
-# df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
+model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
+# model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['categorical_accuracy'])
+# model.compile(loss='categorical_crossentropy',optimizer='adamax',metrics=['categorical_accuracy'])
+
+model.fit(X_train,y_train,epochs=500,batch_size=128)
+score=model.evaluate(X_train,y_train,batch_size=128)
+print(score)
+
+y_test[:,1]=model.predict_classes(X_test)
+df=pd.DataFrame(data=y_test)
+df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
 encoding to categorical--------sooooooo slow????????
@@ -128,45 +131,45 @@ The model is not configured to compute accuracy. ["accuracy"]`to the `model.comp
 The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
 why train is ok, predict is wrong???????
 """
-import numpy as np
-import pandas as pd
-from keras.models import Sequential
-from keras.layers import Dense,Dropout,Activation
-from keras.utils import np_utils
-from sklearn.preprocessing import LabelEncoder
-
-X_train=pd.read_hdf('train.h5','train').values[:,1:]
-y_train=pd.read_hdf('train.h5','train').values[:,0]
-X_test=pd.read_hdf('test.h5','test').values[:,:]
-y_test=np.zeros([X_test.shape[0],2])
-y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
-
-encoder=LabelEncoder()
-encoder.fit(y_train)
-encoded_y=encoder.transform(y_train)
-dummy_y=np_utils.to_categorical(encoded_y)
-print(dummy_y)
-
-def baseline_model():
-    model=Sequential()
-    model.add(Dense(256,activation='relu',input_dim=100))
-    model.add(Dropout(0.5))
-    model.add(Dense(128,activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(64,activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(5,activation='softmax'))
-    model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
-    return model
-
-baseline_model().fit(X_train,dummy_y,epochs=500,batch_size=128)
-score=baseline_model().evaluate(X_train,dummy_y,batch_size=128)
-print(score)
-
-y_test[:,1]=baseline_model().predict_classes(X_test)
-
-df=pd.DataFrame(data=y_test)
-df.to_csv('encoder_mlp.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
+# import numpy as np
+# import pandas as pd
+# from keras.models import Sequential
+# from keras.layers import Dense,Dropout,Activation
+# from keras.utils import np_utils
+# from sklearn.preprocessing import LabelEncoder
+#
+# X_train=pd.read_hdf('train.h5','train').values[:,1:]
+# y_train=pd.read_hdf('train.h5','train').values[:,0]
+# X_test=pd.read_hdf('test.h5','test').values[:,:]
+# y_test=np.zeros([X_test.shape[0],2])
+# y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
+#
+# encoder=LabelEncoder()
+# encoder.fit(y_train)
+# encoded_y=encoder.transform(y_train)
+# dummy_y=np_utils.to_categorical(encoded_y)
+# print(dummy_y)
+#
+# def baseline_model():
+#     model=Sequential()
+#     model.add(Dense(256,activation='relu',input_dim=100))
+#     model.add(Dropout(0.5))
+#     model.add(Dense(128,activation='relu'))
+#     model.add(Dropout(0.5))
+#     model.add(Dense(64,activation='relu'))
+#     model.add(Dropout(0.5))
+#     model.add(Dense(5,activation='softmax'))
+#     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['categorical_accuracy'])
+#     return model
+#
+# baseline_model().fit(X_train,dummy_y,epochs=500,batch_size=128)
+# score=baseline_model().evaluate(X_train,dummy_y,batch_size=128)
+# print(score)
+#
+# y_test[:,1]=baseline_model().predict_classes(X_test)
+#
+# df=pd.DataFrame(data=y_test)
+# df.to_csv('encoder_mlp.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
 """
 MLPClassifier sklearn--reach maximum iterations, but cannot converge the optimization
