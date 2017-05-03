@@ -1,6 +1,6 @@
-"""
-format in python
-"""
+# """
+# format in python
+# """
 a='{1} {2} {0}'.format('one','two','three')
 print(a)
 
@@ -69,7 +69,9 @@ b=sympy.lambdify(x,a)  # transform to lambda function to make calculation faster
 c=b(6)
 print(a,'the derivative is',c)
 
-a=sympy.integrate(3*x**5+sympy.sin(x),x)
+import sympy
+x=sympy.Symbol('x')
+a=float(sympy.integrate(3*x**5+sympy.sin(x),(x,15,float('inf'))))
 print(a)
 
 M=sympy.zeros(3,5)
