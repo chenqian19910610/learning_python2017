@@ -105,9 +105,9 @@ y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
 model=Sequential()
 model.add(Dense(256,activation='relu',input_dim=100))
 model.add(Dropout(0.5))
-model.add(Dense(128,activation='relu'))
+model.add(Dense(256,activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(64,activation='relu'))
+model.add(Dense(128,activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(5,activation='softmax'))
 

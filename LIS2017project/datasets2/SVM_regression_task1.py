@@ -80,6 +80,7 @@ y_train = rawDataTrain[:, 1]  # the target value
 tuned_para = [{'C': [1, 10, 100,1000], 'gamma': [0.1, 0.01, 0.001, 0.0001], 'kernel': ['linear']},
               {'C': [1, 10, 100,1000], 'gamma': [0.1, 0.01, 0.001, 0.0001], 'kernel': ['rbf']}]
 clf = GridSearchCV(estimator = SVR(), param_grid = tuned_para, cv=10, scoring=make_scorer(root_mean_squared_error,greater_is_better=False))
+
 clf.fit(X_train, y_train)
 print('best_parameter', clf.best_params_)
 

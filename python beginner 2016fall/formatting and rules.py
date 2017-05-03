@@ -49,4 +49,37 @@ numpy in python
 """
 import numpy as np
 a=np.array([1,2,3])
+b=np.transpose(a)
+print(np.dot(a,b))
+
+import sympy
+from sympy import *
+x=sympy.Symbol('x')
+y=sympy.Symbol('y')
+m=sympy.simplify(x+y+x-y)
+a=sympy.limit(sympy.sin(x),x,0)
+b=sympy.diff(sympy.tanh(x),x)
+print(m,a,b)
+
+def f(x):
+    y=sympy.sin(x)*sympy.tanh(x)
+    return y
+a=sympy.diff(f(x),x)
+b=sympy.lambdify(x,a)  # transform to lambda function to make calculation faster
+c=b(6)
+print(a,'the derivative is',c)
+
+a=sympy.integrate(3*x**5+sympy.sin(x),x)
 print(a)
+
+M=sympy.zeros(3,5)
+I=sympy.eye(3)
+print(M,I)
+
+import numpy
+from numpy import array
+from numpy.linalg import inv,det
+M=[[25,67],[13,51]]
+N=array(M)
+print(det(M),inv(M),N)
+
