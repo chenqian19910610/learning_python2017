@@ -230,6 +230,191 @@ import numpy as np
 #     ax.set_title(interp_method)
 # plt.show()
 
+# np.random.seed(0)
+# n_bins=10
+# x=np.random.randn(1000,3)
+# fig,axes=plt.subplots(nrows=2,ncols=2)
+# ax0,ax1,ax2,ax3=axes.flatten()
+# colors=['red','tan','lime']
+# ax0.hist(x,n_bins,normed=1,histtype='bar',color=colors,label=colors)
+# ax0.legend(prop={'size':10})
+# ax0.set_title('bars with legend')
+#
+# ax1.hist(x, n_bins, normed=1, histtype='bar', stacked=True)
+# ax1.set_title('stacked bar')
+#
+# ax2.hist(x, n_bins, histtype='step', stacked=True, fill=False)
+# ax2.set_title('stack step (unfilled)')
+#
+# # Make a multiple-histogram of data-sets with different length.
+# x_multi = [np.random.randn(n) for n in [10000, 5000, 2000]]
+# ax3.hist(x_multi, n_bins, histtype='bar')
+# ax3.set_title('different sample sizes')
+#
+# fig.tight_layout()
+# plt.show()
+
+
+
+"""
+plot contour
+"""
+# import matplotlib
+# import numpy as np
+# import matplotlib.cm as cm
+# import matplotlib.mlab as mlab
+# import matplotlib.pyplot as plt
+#
+# matplotlib.rcParams['xtick.direction'] = 'out'
+# matplotlib.rcParams['ytick.direction'] = 'out'
+#
+# delta = 0.025
+# x = np.arange(-3.0, 3.0, delta)
+# y = np.arange(-2.0, 2.0, delta)
+# X, Y = np.meshgrid(x, y)
+# Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
+# Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
+# # difference of Gaussians
+# Z = 10.0 * (Z2 - Z1)
+#
+#
+# # Create a simple contour plot with labels using default colors.  The
+# # inline argument to clabel will control whether the labels are draw
+# # over the line segments of the contour, removing the lines beneath
+# # the label
+# plt.figure()
+# CS = plt.contour(X, Y, Z)
+# plt.clabel(CS, inline=1, fontsize=10)
+# plt.title('Simplest default with labels')
+#
+#
+# # contour labels can be placed manually by providing list of positions
+# # (in data coordinate). See ginput_manual_clabel.py for interactive
+# # placement.
+# plt.figure()
+# CS = plt.contour(X, Y, Z)
+# manual_locations = [(-1, -1.4), (-0.62, -0.7), (-2, 0.5), (1.7, 1.2), (2.0, 1.4), (2.4, 1.7)]
+# plt.clabel(CS, inline=1, fontsize=10, manual=manual_locations)
+# plt.title('labels at selected locations')
+#
+#
+# # You can force all the contours to be the same color.
+# plt.figure()
+# CS = plt.contour(X, Y, Z, 6,
+#                  colors='k',  # negative contours will be dashed by default
+#                  )
+# plt.clabel(CS, fontsize=9, inline=1)
+# plt.title('Single color - negative contours dashed')
+#
+# # You can set negative contours to be solid instead of dashed:
+# matplotlib.rcParams['contour.negative_linestyle'] = 'solid'
+# plt.figure()
+# CS = plt.contour(X, Y, Z, 6,
+#                  colors='k',  # negative contours will be dashed by default
+#                  )
+# plt.clabel(CS, fontsize=9, inline=1)
+# plt.title('Single color - negative contours solid')
+#
+#
+# # And you can manually specify the colors of the contour
+# plt.figure()
+# CS = plt.contour(X, Y, Z, 6,
+#                  linewidths=np.arange(.5, 4, .5),
+#                  colors=('r', 'green', 'blue', (1, 1, 0), '#afeeee', '0.5')
+#                  )
+# plt.clabel(CS, fontsize=9, inline=1)
+# plt.title('Crazy lines')
+#
+#
+# # Or you can use a colormap to specify the colors; the default
+# # colormap will be used for the contour lines
+# plt.figure()
+# im = plt.imshow(Z, interpolation='bilinear', origin='lower',
+#                 cmap=cm.gray, extent=(-3, 3, -2, 2))
+# levels = np.arange(-1.2, 1.6, 0.2)
+# CS = plt.contour(Z, levels,
+#                  origin='lower',
+#                  linewidths=2,
+#                  extent=(-3, 3, -2, 2))
+#
+# # Thicken the zero contour.
+# zc = CS.collections[6]
+# plt.setp(zc, linewidth=4)
+#
+# plt.clabel(CS, levels[1::2],  # label every second level
+#            inline=1,
+#            fmt='%1.1f',
+#            fontsize=14)
+#
+# # make a colorbar for the contour lines
+# CB = plt.colorbar(CS, shrink=0.8, extend='both')
+#
+# plt.title('Lines with colorbar')
+# #plt.hot()  # Now change the colormap for the contour lines and colorbar
+# plt.flag()
+#
+# # We can still add a colorbar for the image, too.
+# CBI = plt.colorbar(im, orientation='horizontal', shrink=0.8)
+#
+# # This makes the original colorbar look a bit out of place,
+# # so let's improve its position.
+#
+# l, b, w, h = plt.gca().get_position().bounds
+# ll, bb, ww, hh = CB.ax.get_position().bounds
+# CB.ax.set_position([ll, b + 0.1*h, ww, h*0.8])
+#
+#
+# plt.show()
+
+
+
+
+"""
+embed subplot inside a plot
+"""
+# from mpl_toolkits.axes_grid.inset_locator import inset_axes
+# import matplotlib.pyplot as plt
+# import numpy as np
+#
+# # create some data to use for the plot
+# dt = 0.001
+# t = np.arange(0.0, 10.0, dt)
+# r = np.exp(-t[:1000]/0.05)               # impulse response
+# x = np.random.randn(len(t))
+# s = np.convolve(x, r)[:len(x)]*dt  # colored noise
+#
+# fig = plt.figure(figsize=(9, 4),facecolor='white')
+# ax = fig.add_subplot(121)
+#
+# # the main axes is subplot(111) by default
+# plt.plot(t, s)
+# plt.axis([0, 1, 1.1*np.amin(s), 2*np.amax(s)])
+# plt.xlabel('time (s)')
+# plt.ylabel('current (nA)')
+# plt.title('Subplot 1: \n Gaussian colored noise')
+#
+# # this is an inset axes over the main axes
+# inset_axes = inset_axes(ax,
+#                     width="50%", # width = 30% of parent_bbox
+#                     height=1.0, # height : 1 inch
+#                     loc=1)
+# n, bins, patches = plt.hist(s, 400, normed=1)
+# #plt.title('Probability')
+# plt.xticks([])
+# plt.yticks([])
+#
+# ax = fig.add_subplot(122)
+# # the main axes is subplot(111) by default
+# plt.plot(t, s)
+# plt.axis([0, 1, 1.1*np.amin(s), 2*np.amax(s)])
+# plt.xlabel('time (s)')
+# plt.ylabel('current (nA)')
+# plt.title('Subplot 2: \n Gaussian colored noise')
+#
+# plt.tight_layout()
+# plt.show()
+
+
 """
 animation, need GUI
 """
@@ -248,3 +433,4 @@ animation, need GUI
 #
 #         print('step',i)
 #         plt.pause(0.5)
+
