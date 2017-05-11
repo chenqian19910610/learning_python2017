@@ -106,7 +106,7 @@ y_test[:,0]=pd.read_csv('sample.csv', index_col=False).values[:,0]
 model=Sequential()
 model.add(Dense(256,activation='relu',input_dim=100))
 model.add(Dropout(0.5))
-model.add(Dense(256,activation='relu',kernel_regularizer=regularizers.l2(0.01)))
+model.add(Dense(256,activation='relu'))
 model.add(Dropout(0.25))
 model.add(Dense(128,activation='relu'))
 model.add(Dropout(0.25))
@@ -126,8 +126,8 @@ y_test[:,1]=model.predict_classes(X_test)
 df=pd.DataFrame(data=y_test)
 df.to_csv('MLP.csv', header=['Id', 'y'], sep=',', index=False, float_format='%.0f')
 
-from keras.utils import plot_model
-plot_model(model,to_file='MLP_model.png')
+# from keras.utils import plot_model
+# plot_model(model,to_file='MLP_model.png')
 
 """
 encoding to categorical--------sooooooo slow????????
