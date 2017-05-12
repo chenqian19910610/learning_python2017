@@ -51,6 +51,7 @@ Polinomial features:http://scikit-learn.org/stable/modules/generated/sklearn.pre
 """
 visualize PCA-2Dimension
 """
+# import matplotlib
 # import matplotlib.pyplot as plt
 # import numpy as np
 # import pandas as pd
@@ -79,6 +80,6 @@ visualize PCA-2Dimension
 # plt.ylim(x2_min,x2_max)
 # plt.xlabel('x1')
 # plt.ylabel('x2')
-# plt.scatter(X_train_1[:,0],X_train_1[:,1],c=y_train,alpha=0.8)
+# plt.scatter(X_train_1[:,0],X_train_1[:,1],c=y_train,cmap=matplotlib.colors.ListedColormap(['green','red']),alpha=0.8)
 #
 # plt.show()
